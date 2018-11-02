@@ -1,0 +1,29 @@
+{
+  "name": "pxer-engine-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "example": "node --inspect -r ts-node/register example.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pea3nut/pxer-engine-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pea3nut/pxer-engine-demo/issues"
+  },
+  "homepage": "https://github.com/pea3nut/pxer-engine-demo#readme",
+  "devDependencies": {
+    "@types/node": "^10.12.0"
+  },
+  "dependencies": {
+    "@types/request": "^2.47.1",
+    "request": "^2.88.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.3"
+  }
+}
