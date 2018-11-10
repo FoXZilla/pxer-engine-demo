@@ -1,7 +1,7 @@
 import * as https from "https"
-import { WorkType, UgoiraMeta } from "./Work";
 import { URL } from "url";
 import { Buffer } from "buffer";
+import {UgoiraMeta} from "./types"
 
 interface MemberWorksResponse {
     ID: string,

@@ -1,5 +1,4 @@
-import {Work} from "./Work";
-import {TaskID, PxerTask, PxerDirective, TaskError, TaskResultCode, Directive} from "./Task"
+import {PxerTask,PxerDirective, Work, TaskError, TaskResultCode} from "./types"
 import Router from "./Router"
 import WaitGroup from "./WaitGroup"
 

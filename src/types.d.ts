@@ -1,6 +1,29 @@
-import {Work, WorkType} from "./Work"
+export interface Work {
+    ID: string,
+    Type: WorkType,
+    URLs: {
+        mini: string,
+        thumb: string,
+        small: string,
+        regular: string,
+        original: string,
+    }
+    UgoiraMeta?:UgoiraMeta,
+}
 
-enum Directive {
+export interface UgoiraMeta {
+    src: string,
+    originalSrc: string,
+    mime_type: string,
+    frames: {
+        file: string,
+        delay: number,
+    }[]
+}
+
+export type WorkType = "manga"|"illust"|"ugoira"
+
+export const enum Directive {
     GetMemberWorks = 1,
     GetWorkInfo = 2,
     GetUgoiraMeta = 3,
@@ -9,28 +32,28 @@ enum Directive {
     ProcessWorkList = 101,
 }
 
-type TaskID = number;
+export type TaskID = number;
 
-enum TaskResultCode {
+export const enum TaskResultCode {
     OK = 0,
     NetworkError = 300,
     AccountRestriction = 400,
     ParseError = 500,
 }
 
-interface PxerDirective {
+export interface PxerDirective {
     Directive: Directive,
     Payload: DirectivePayload,
     Options: DirectiveOptions,
 }
 
-interface DirectivePayload {}
+export interface DirectivePayload {}
 
-interface GetMemberWorksPayload extends DirectivePayload {
+export interface GetMemberWorksPayload extends DirectivePayload {
     UserID: string,
 }
 
-interface GetWorkInfoPayload extends DirectivePayload {
+export interface GetWorkInfoPayload extends DirectivePayload {
     WorkID: string,
     //AppendTaskIfUgoira: boolean,
 }
@@ -69,5 +92,3 @@ interface TaskError {
     TaskID: TaskID,
     Msg?: string,
 }
-
-export {Directive, TaskID, TaskResultCode, PxerDirective, DirectivePayload, PxerTask, TaskResult, GetMemberWorksPayload, ProcessWorkListPayload, GetWorkInfoPayload,GetUgoiraMetaPayload, TaskError}

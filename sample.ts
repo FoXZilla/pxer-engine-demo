@@ -1,6 +1,6 @@
 import PxerScheduler from "./index";
-import { Directive } from "./src/Task";
-import { GetMemberWorksPayload } from "./src/Task";
+import { Directive } from "./src/types";
+import { GetMemberWorksPayload } from "./src/types";
 import { writeFileSync, readFileSync } from "fs";
 import process from "process"
 import commander from "commander"

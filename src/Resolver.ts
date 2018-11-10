@@ -1,6 +1,6 @@
-import {Directive, PxerTask, GetMemberWorksPayload, GetWorkInfoPayload, ProcessWorkListPayload, TaskResultCode, TaskResult, GetUgoiraMetaPayload} from "./Task"
+import {Directive, PxerTask, GetMemberWorksPayload, GetWorkInfoPayload, ProcessWorkListPayload, TaskResultCode, TaskResult, GetUgoiraMetaPayload, Work} from "./types"
 import PixivAPI from "./PixivAPI"
-import { NumberToWorkType, Work} from "./Work";
+import {NumberToWorkType} from "./Work";
 import { worker } from "cluster";
 
 class BaseResolver {

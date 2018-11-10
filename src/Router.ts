@@ -1,4 +1,4 @@
-import { PxerTask, Directive } from "./Task";
+import { PxerTask, Directive } from "./types";
 import {BaseResolver, SugarResolver} from "./Resolver";
 
 class Router{
