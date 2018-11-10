@@ -78,7 +78,6 @@ interface DirectiveOptions {
 
 interface PxerTask extends PxerDirective{
     Results: null|TaskResult,
-    Triggers: TaskID[],
     ID: TaskID,
 }
 

@@ -19,7 +19,6 @@ class PxerScheduler {
         let task: PxerTask = {
             ...req,
             Results: null,
-            Triggers: [],
             ID: 0,
         };
         this.TaskList[0] = task
@@ -83,7 +82,6 @@ class PxerScheduler {
             }
             for (let work of works) {
                 let id = this.appendTask(work);
-                task.Triggers.push(id);
                 work.ID = id;
                 if (this.debug) {
                     console.log(`PxerScheduler: pushing task ${id}`)

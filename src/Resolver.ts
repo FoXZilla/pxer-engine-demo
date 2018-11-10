@@ -1,7 +1,6 @@
 import {Directive, PxerTask, GetMemberWorksPayload, GetWorkInfoPayload, ProcessWorkListPayload, TaskResultCode, TaskResult, GetUgoiraMetaPayload, Work} from "./types"
 import PixivAPI from "./PixivAPI"
 import {NumberToWorkType} from "./Work";
-import { worker } from "cluster";
 
 class BaseResolver {
     static async GetMemberWorks(task: PxerTask): Promise<PxerTask[]> {
@@ -26,7 +25,6 @@ class BaseResolver {
                 Works: res.map(r=>{return {ID: r.ID}}),
             },
             Results: null,
-            Triggers: [],
             ID: -1,
         }]
     }
@@ -59,7 +57,6 @@ class BaseResolver {
                     PartiallyFilledWork: work,
                 },
                 Results: null,
-                Triggers: [],
                 ID: -1,
             }]
         }
@@ -104,7 +101,6 @@ class SugarResolver {
                     //AppendTaskIfUgoira: true,
                 },
                 Results: null,
-                Triggers: [],
                 ID: -1,
             })
         }
