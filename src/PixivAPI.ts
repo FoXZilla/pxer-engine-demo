@@ -1,4 +1,4 @@
-import * as https from "https"
+import request from "request"
 import { URL } from "url";
 import { Buffer } from "buffer";
 import {UgoiraMeta} from "./types"
@@ -78,22 +78,29 @@ class PixivAPI {
      */
     private static get(url: string): Promise<string> {
         return new Promise((resolve, reject)=>{
-            let data = Buffer.from("")
-            let target = new URL(url);
-            let req = https.request({
-                host: target.host,
-                path: target.href + target.search,
+            request({
+                method: "GET",
+                url: url,
                 headers: {
-                    "Cookie": `PHPSESSID=${(<any>global).PHPSESSID}`,
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:62.0) Gecko/20100101 Firefox/62.0',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+                'Cookie': `PHPSESSID=${(<any>global).PHPSESSID}`,
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Cache-Control': 'max-age=0',
+                'TE': 'Trailers',
+                },
+            }, function(err, resp, body) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if ([200,304].indexOf(resp.statusCode)==-1) {
+                        reject(new Error(`Remote returned ${resp.statusCode}: ${resp.statusMessage}`))
+                    }
+                    resolve(body.toString())
                 }
-            }, (res)=>{
-                res.on("data", (chunk)=>{
-                    data += chunk;
-                })
-                res.on("end", ()=>resolve(data.toString()))
-                res.on("error", (err)=>reject(err))
             })
-            req.end();
         })
     }
     
