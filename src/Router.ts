@@ -1,6 +1,8 @@
 import { PxerTask, Directive } from "./types";
 import {BaseResolver, SugarResolver} from "./Resolver";
-
+/**
+ * Route tasks to their own resolvers
+ */
 class Router{
     static Exec(task: PxerTask) :Promise<PxerTask[]> {
         if (task.Options.EnableDebug) {

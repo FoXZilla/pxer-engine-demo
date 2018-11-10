@@ -2,7 +2,31 @@ import {Directive, PxerTask, GetMemberWorksPayload, GetWorkInfoPayload, ProcessW
 import PixivAPI from "./PixivAPI"
 import {NumberToWorkType} from "./Work";
 
+/*
+    Resolver Layers:
+        3 :[Sugar only]Paging
+        2 :Acquire work list
+        1 :[process_work_list only] perform filtering and batching before moving on to fetch work metadata
+        0 :Resolve work metadata
+        -1:Resolve ugoira metadata
+    
+    Resolver Workflow:
+        0 :Check whether the given task is of the right type
+        1 :Parse work payload and perform tasks
+        2 :Fill in task.Results (whether there is an error && result work list(layer<=0 only otherwise return []) )
+        3 :Return subtasks of at the same or a lower layer
+
+    Rules for Resolvers:
+        0 :Do NOT skip over layer 1. Resolvers at layer > 1 should only return subtasks of layer>=1.
+        1 :Do not return subtasks of a higher layer and avoid returning subtasks of the same layer.
+*/
+
 class BaseResolver {
+    /**
+     * Get all works by a single user
+     * Layer: 2
+     * @param task raw Task
+     */
     static async GetMemberWorks(task: PxerTask): Promise<PxerTask[]> {
         if (task.Directive!=Directive.GetMemberWorks) {
             throw new Error("Directive type mismatch")
@@ -28,6 +52,12 @@ class BaseResolver {
             ID: -1,
         }]
     }
+
+    /**
+     * Get metadata of a single work
+     * Layer: 0
+     * @param task raw task
+     */
     static async GetWorkInfo(task: PxerTask): Promise<PxerTask[]> {
         if (task.Directive!=Directive.GetWorkInfo) {
             throw new Error("Directive type mismatch")
@@ -63,6 +93,12 @@ class BaseResolver {
         task.Results.Works.push(work);
         return []
     }
+
+    /**
+     * Get ugoira meta data
+     * Layer: -1
+     * @param task raw task
+     */
     static async GetUgoiraMeta(task: PxerTask) :Promise<PxerTask[]> {
         if (task.Directive!=Directive.GetUgoiraMeta) {
             throw new Error("Directive type mismatch")
@@ -83,6 +119,11 @@ class BaseResolver {
 }
 
 class SugarResolver {
+    /**
+     * Perform filtering
+     * Layer: 1
+     * @param task raw task
+     */
     static async ProcessWorksList(task: PxerTask): Promise<PxerTask[]> {
         if (task.Directive!=Directive.ProcessWorkList) {
             throw new Error("Directive type mismatch")

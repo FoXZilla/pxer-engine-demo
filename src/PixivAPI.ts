@@ -70,8 +70,12 @@ interface WorkBasicInfoResponse {
         },
     }
 }
-
+//** Raw Pixiv API encapsulation */
 class PixivAPI {
+    
+    /** Network Request
+     *  TODO: Add browser support
+     */
     private static get(url: string): Promise<string> {
         return new Promise((resolve, reject)=>{
             let data = Buffer.from("")
@@ -92,6 +96,11 @@ class PixivAPI {
             req.end();
         })
     }
+    
+    /**
+     * Acquire all works by a user
+     * @param id userID
+     */
     public static async MemberWorks(id: string): Promise<MemberWorksResponse[]> {
         let url = `https://www.pixiv.net/ajax/user/${id}/profile/all`
         let res = await this.get(url)
@@ -114,6 +123,10 @@ class PixivAPI {
         }
         return works
     }
+    /**
+     * Acquire basic work info
+     * @param id il;ustID
+     */
     public static async WorkInfoBasic(id: string): Promise<WorkBasicInfoResponse> {
         let url = `https://www.pixiv.net/ajax/illust/${id}`
         let res = await this.get(url)
@@ -124,6 +137,10 @@ class PixivAPI {
         let info: WorkBasicInfoResponse = data.body;
         return info
     }
+    /**
+     * Acquire ugoira meta
+     * @param id illustID
+     */
     public static async UgoiraMeta(id: string): Promise<UgoiraMeta> {
         let url = `https://www.pixiv.net/ajax/illust/${id}/ugoira_meta`
         let res = await this.get(url);

@@ -4,7 +4,6 @@ import { GetMemberWorksPayload } from "./src/types";
 import { writeFileSync, readFileSync } from "fs";
 import process from "process"
 import commander from "commander"
-import { finished } from "stream";
 
 commander
     .option("-s, --session <PHPSESSID>", "PHPSESSID", /[\w\d]+/)
@@ -19,15 +18,14 @@ if (!commander.session) {
 
 (<any>global).PHPSESSID = commander.session
 
-let app: PxerScheduler;
+let app = new PxerScheduler();
+let flow: Promise<void>;
 
 if (commander.recover) {
     console.log("Recovering")
-    app = PxerScheduler.load(readFileSync(commander.recover).toString())
+    flow = app.resume(readFileSync(commander.recover).toString())
 } else {
-    app = new PxerScheduler();
-
-    app.init({
+    flow = app.do({
         Directive: Directive.GetMemberWorks,
         Payload: <GetMemberWorksPayload>{
             UserID: "12104609",
@@ -53,7 +51,7 @@ function outputResult(){
     console.log(`Collected errors: ${JSON.stringify(err)}`)
 }
 
-app.run().then(()=>{
+flow.then(()=>{
     clearInterval(progressint)
     console.log("Finished")
     outputResult()

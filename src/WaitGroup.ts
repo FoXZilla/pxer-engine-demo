@@ -1,3 +1,6 @@
+/**
+ * WaitGroup implementation to simplify task management
+ */
 class WaitGroup {
     private cbs: (()=>any)[]
     private counter: number

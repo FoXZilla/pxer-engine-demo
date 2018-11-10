@@ -6,15 +6,31 @@ class PxerScheduler {
     private TaskList: PxerTask[]
     private wg: WaitGroup
     private debug: boolean
+    
     constructor(){
         this.TaskList = []
         this.wg = new WaitGroup
         this.debug = false
     }
-    public static load(state: string) :PxerScheduler {
-        return Object.assign(new PxerScheduler, JSON.parse(state))
+    /**
+     * Resume from a saved progress
+     * @param state progess save data
+     */
+    public resume(state: string) :Promise<void> {
+        Object.assign(this, JSON.parse(state))
+        return this._run();
     }
-    public init(req: PxerDirective) :boolean {
+    /**
+     * Serialize current progress
+     */
+    public save(): string {
+        return JSON.stringify(this)
+    }
+    /**
+     * Start the task
+     * @param req initial directive
+     */
+    public do(req: PxerDirective) :Promise<void> {
         this.debug = req.Options.EnableDebug;
         let task: PxerTask = {
             ...req,
@@ -22,11 +38,12 @@ class PxerScheduler {
             ID: 0,
         };
         this.TaskList[0] = task
-
-        return true
+        return this._run()
     }
-    
-    public run() :Promise<void> {
+    /**
+     * Start the flow
+     */
+    private _run() :Promise<void> {
         this.wg = new WaitGroup;
         let pendingIDs = []
         for (let i=0; i<this.TaskList.length; i++) {
@@ -46,10 +63,15 @@ class PxerScheduler {
         return this.wg.wait()
     }
 
+    /**
+     * Calculate current progress by returning completed tasks and task list length
+     */
     public getProgress(): [number, number] {
-        return [this.TaskList.length- this.wg.getCount(), this.TaskList.length]
+        return [this.TaskList.length - this.wg.getCount(), this.TaskList.length]
     }
-    
+    /**
+     * Scan all completed tasks and aggregate work results
+     */
     public collect(): [Work[], TaskError[]] {
         let works: Work[] = [];
         let errors: TaskError[] = [];
@@ -63,12 +85,25 @@ class PxerScheduler {
         }
         return [works, errors]
     }
-    public save(): string {
-        return JSON.stringify(this)
-    }
+    
+    /**
+     * add a task to the workerpool
+     * @param task the new task to add to the workerpool
+     */
     private appendTask(task: PxerTask) :number {
         return this.TaskList.push(task)-1
     }
+    
+    /**
+     * execute new task
+     * Flow:
+     * 0: Check task validity
+     * 1: increment WaitGroup
+     * 2: Execute task
+     * 3: Append subtasks
+     * 4: decrement WaitGroup
+     * @param id task id
+     */
     private _exec(id: number): void {
         let task = this.TaskList[id];
         if (this.debug) {
